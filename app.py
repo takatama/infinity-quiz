@@ -16,6 +16,7 @@ def initialize_state():
         st.session_state.score = 0
         st.session_state.show_next = False
         st.session_state.message = ""
+        st.session_state.user_answers = []  # Initialize user_answers in session_state
 
 # Display question and options
 def display_question(question):
@@ -25,12 +26,14 @@ def display_question(question):
 # Check answer and update state
 def check_answer(answer, question):
     if st.button('Submit', key='submit_button'):
-        if answer == question['answer']:
+        correct = answer == question['answer']
+        if correct:
             st.session_state.score += 1
             st.session_state.message = 'Correct!'
         else:
             st.session_state.message = f'Incorrect. The correct answer is {question["answer"]}.'
         st.session_state.show_next = True
+        st.session_state.user_answers.append((question['question'], answer, correct, question['answer']))  # Save user's answer and its correctness
         st.experimental_rerun()
 
 # Move to next question
@@ -40,6 +43,15 @@ def next_question():
         st.session_state.show_next = False
         st.session_state.message = ""
         st.experimental_rerun()
+
+# Display final score and answers
+def display_final_score_and_answers():
+    st.write('Your final score is:', st.session_state.score)
+    for question, user_answer, correct, correct_answer in st.session_state.user_answers:
+        st.write(f"Question: {question}")
+        st.write(f"Your answer: {user_answer} ({'Correct' if correct else 'Incorrect'})")
+        st.write(f"Correct answer: {correct_answer}")
+        st.write("---")
 
 # Quiz logic
 def quiz(questions):
@@ -55,7 +67,7 @@ def quiz(questions):
         else:
             check_answer(answer, question)
     else:
-        st.write('Your final score is:', st.session_state.score)
+        display_final_score_and_answers()
 
 # Run quiz
 questions = load_questions(QUESTIONS_FILE)
