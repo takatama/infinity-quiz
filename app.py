@@ -34,7 +34,7 @@ def check_answer(answer, question):
             st.session_state.message = f'Incorrect. The correct answer is {question["options"][question["answerIndex"]]}.'
         st.session_state.show_next = True
         st.session_state.user_answers.append((question['question'], answer, correct, question['options'][question['answerIndex']]))  # Save user's answer and its correctness
-        st.experimental_rerun()
+        st.rerun()
 
 # Move to next question
 def next_question():
@@ -43,7 +43,7 @@ def next_question():
         st.session_state.quiz_state += 1
         st.session_state.show_next = False
         st.session_state.message = ""
-        st.experimental_rerun()
+        st.rerun()
 
 # Display final score and answers
 def display_final_score_and_answers():
@@ -55,7 +55,7 @@ def display_final_score_and_answers():
         st.write("---")
     if st.button("Retry"):
         st.session_state.clear()  # Clear session state
-        st.experimental_rerun()
+        st.rerun()
 
 # Quiz logic
 def quiz(questions):
