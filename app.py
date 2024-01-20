@@ -8,10 +8,10 @@ with open('data/questions.json', 'r') as f:
 # Quiz logic
 def quiz(questions):
     score = 0
-    for question in questions:
+    for i, question in enumerate(questions):
         st.write(question['question'])
-        answer = st.selectbox("Choose one:", question['options'])
-        if st.button('Submit'):
+        answer = st.selectbox("Choose one:", question['options'], key=i)
+        if st.button('Submit', key=f"button{i}"):
             if answer == question['answer']:
                 score += 1
                 st.write('Correct!')
