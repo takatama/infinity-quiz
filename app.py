@@ -38,7 +38,8 @@ def check_answer(answer, question):
 
 # Move to next question
 def next_question():
-    if st.button('Next Question', key='next_button'):
+    button_label = 'Show Results' if st.session_state.quiz_state == len(questions) - 1 else 'Next Question'
+    if st.button(button_label, key='next_button'):
         st.session_state.quiz_state += 1
         st.session_state.show_next = False
         st.session_state.message = ""
