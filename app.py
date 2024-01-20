@@ -26,14 +26,14 @@ def display_question(question):
 # Check answer and update state
 def check_answer(answer, question):
     if st.button('Submit', key='submit_button'):
-        correct = answer == question['answer']
+        correct = answer == question['options'][question['answerIndex']]
         if correct:
             st.session_state.score += 1
             st.session_state.message = 'Correct!'
         else:
-            st.session_state.message = f'Incorrect. The correct answer is {question["answer"]}.'
+            st.session_state.message = f'Incorrect. The correct answer is {question["options"][question["answerIndex"]]}.'
         st.session_state.show_next = True
-        st.session_state.user_answers.append((question['question'], answer, correct, question['answer']))  # Save user's answer and its correctness
+        st.session_state.user_answers.append((question['question'], answer, correct, question['options'][question['answerIndex']]))  # Save user's answer and its correctness
         st.experimental_rerun()
 
 # Move to next question
