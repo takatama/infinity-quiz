@@ -29,7 +29,7 @@ def check_answer(answer, question):
             st.session_state.score += 1
             st.session_state.message = 'Correct!'
         else:
-            st.session_state.message = 'Incorrect.'
+            st.session_state.message = f'Incorrect. The correct answer is {question["answer"]}.'
         st.session_state.show_next = True
         st.experimental_rerun()
 
