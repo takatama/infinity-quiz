@@ -20,7 +20,7 @@ def initialize_state():
 # Display question and options
 def display_question(question):
     st.write(question['question'])
-    return st.selectbox("Choose one:", question['options'], key='selectbox')
+    return st.radio("Choose one:", question['options'], key='radio')
 
 # Check answer and update state
 def check_answer(answer, question):
