@@ -1,41 +1,62 @@
 import streamlit as st
 import json
 
+# Constants
+QUESTIONS_FILE = 'data/questions.json'
+
 # Load questions
-with open('data/questions.json', 'r') as f:
-    questions = json.load(f)
+def load_questions(file_path):
+    with open(file_path, 'r') as f:
+        return json.load(f)
+
+# Initialize session state
+def initialize_state():
+    if 'quiz_state' not in st.session_state:
+        st.session_state.quiz_state = 0
+        st.session_state.score = 0
+        st.session_state.show_next = False
+        st.session_state.message = ""
+
+# Display question and options
+def display_question(question):
+    st.write(question['question'])
+    return st.selectbox("Choose one:", question['options'], key='selectbox')
+
+# Check answer and update state
+def check_answer(answer, question):
+    if st.button('Submit', key='submit_button'):
+        if answer == question['answer']:
+            st.session_state.score += 1
+            st.session_state.message = 'Correct!'
+        else:
+            st.session_state.message = 'Incorrect.'
+        st.session_state.show_next = True
+        st.experimental_rerun()
+
+# Move to next question
+def next_question():
+    if st.button('Next Question', key='next_button'):
+        st.session_state.quiz_state += 1
+        st.session_state.show_next = False
+        st.session_state.message = ""
+        st.experimental_rerun()
 
 # Quiz logic
 def quiz(questions):
-    if 'quiz_state' not in st.session_state:
-        st.session_state.quiz_state = 0  # Initialize quiz_state in session_state
-        st.session_state.score = 0  # Initialize score in session_state
-        st.session_state.show_next = False  # Initialize show_next in session_state
-        st.session_state.message = ""  # Initialize message in session_state
+    initialize_state()
 
     if st.session_state.quiz_state < len(questions):
         question = questions[st.session_state.quiz_state]
-        st.write(question['question'])
-        answer = st.selectbox("Choose one:", question['options'], key='selectbox')
+        answer = display_question(question)
 
         if st.session_state.show_next:
-            st.write(st.session_state.message)  # Display the message
-            if st.button('Next Question', key='next_button'):
-                st.session_state.quiz_state += 1  # Move to next question
-                st.session_state.show_next = False  # Reset show_next flag
-                st.session_state.message = ""  # Reset the message
-                st.experimental_rerun()  # Rerun the script to update the state
+            st.write(st.session_state.message)
+            next_question()
         else:
-            if st.button('Submit', key='submit_button'):
-                if answer == question['answer']:
-                    st.session_state.score += 1
-                    st.session_state.message = 'Correct!'  # Set the message
-                else:
-                    st.session_state.message = 'Incorrect.'  # Set the message
-                st.session_state.show_next = True  # Set show_next flag to True
-                st.experimental_rerun()  # Rerun the script to update the state
+            check_answer(answer, question)
     else:
         st.write('Your final score is:', st.session_state.score)
 
 # Run quiz
+questions = load_questions(QUESTIONS_FILE)
 quiz(questions)
