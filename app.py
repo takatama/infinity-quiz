@@ -53,6 +53,9 @@ def display_final_score_and_answers():
         st.write(f"Your answer: {user_answer} ({'Correct' if correct else 'Incorrect'})")
         st.write(f"Correct answer: {correct_answer}")
         st.write("---")
+    if st.button("Retry"):
+        st.session_state.clear()  # Clear session state
+        st.experimental_rerun()
 
 # Quiz logic
 def quiz(questions):
