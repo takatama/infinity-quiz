@@ -85,7 +85,6 @@ genre = st.text_input("Enter a genre", "Python")
 if (st.button("Start")):
     st.session_state.clear()
     questions = create_quiz(genre)
-    print(questions)
     initialize_state(questions)
 
 if 'questions' in st.session_state:
