@@ -50,6 +50,7 @@ def _create_quiz_by_function_calling(client, genre, num_questions, num_options):
                     "name": "create_questions",
                     "description": "Get quiz for given genre",
                     "parameters": {
+                        "$schema": "http://json-schema.org/draft-07/schema#",
                         "type": "object",
                         "properties": {
                             "questions": {
@@ -57,26 +58,23 @@ def _create_quiz_by_function_calling(client, genre, num_questions, num_options):
                                 "items": {
                                     "type": "object",
                                     "properties": {
-                                        "question": {
-                                            "type": "string",
-                                            "description": "Question to ask",
-                                        },
+                                        "question": {"type": "string"},
                                         "options": {
                                             "type": "array",
                                             "items": {"type": "string"},
-                                            "description": "Options to choose from",
                                         },
                                         "answerIndex": {
-                                            "type": "number",
-                                            "description": "Index of the correct answer in the options array",
+                                            "type": "integer",
+                                            "minimum": 0,
                                         },
                                     },
+                                    "required": ["question", "options", "answerIndex"],
+                                    "additionalProperties": False,
                                 },
-                            },
+                            }
                         },
-                        "required": [
-                            "questions",
-                        ],
+                        "required": ["questions"],
+                        "additionalProperties": False,
                     },
                 },
             }
@@ -93,8 +91,8 @@ def create_quiz(genre="Python", num_questions=3, num_options=4):
     client = OpenAI(
         api_key=os.getenv("OPENAI_API_KEY"),
     )
-    # return _create_quiz_by_function_calling(client, genre, num_questions, num_options)
-    return _create_quiz_by_json_mode(client, genre, num_questions, num_options)
+    return _create_quiz_by_function_calling(client, genre, num_questions, num_options)
+    # return _create_quiz_by_json_mode(client, genre, num_questions, num_options)
 
 
 if __name__ == "__main__":
