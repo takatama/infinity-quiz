@@ -1,17 +1,11 @@
 import streamlit as st
 import json
-
-# Constants
-QUESTIONS_FILE = 'data/questions.json'
-
-# Load questions
-def load_questions(file_path):
-    with open(file_path, 'r') as f:
-        return json.load(f)
+from open_ai import create_quiz
 
 # Initialize session state
-def initialize_state():
+def initialize_state(questions):
     if 'quiz_state' not in st.session_state:
+        st.session_state.questions = questions
         st.session_state.quiz_state = 0
         st.session_state.score = 0
         st.session_state.show_next = False
@@ -37,7 +31,7 @@ def check_answer(answer, question):
         st.rerun()
 
 # Move to next question
-def next_question():
+def next_question(questions):
     button_label = 'Show Results' if st.session_state.quiz_state == len(questions) - 1 else 'Next Question'
     if st.button(button_label, key='next_button'):
         st.session_state.quiz_state += 1
@@ -54,25 +48,32 @@ def display_final_score_and_answers():
         st.write(f"Correct answer: {correct_answer}")
         st.write("---")
     if st.button("Retry"):
-        st.session_state.clear()  # Clear session state
+        st.session_state.clear()
         st.rerun()
 
 # Quiz logic
 def quiz(questions):
-    initialize_state()
-
     if st.session_state.quiz_state < len(questions):
         question = questions[st.session_state.quiz_state]
         answer = display_question(question)
 
         if st.session_state.show_next:
             st.write(st.session_state.message)
-            next_question()
+            next_question(questions)
         else:
             check_answer(answer, question)
     else:
         display_final_score_and_answers()
 
 # Run quiz
-questions = load_questions(QUESTIONS_FILE)
-quiz(questions)
+genre = st.text_input("Enter a genre", "Python")
+if (st.button("Start")):
+    st.session_state.clear()
+    questions = create_quiz(genre)
+    print(questions)
+    initialize_state(questions)
+
+if 'questions' in st.session_state:
+    quiz(st.session_state.questions)
+else:
+    st.write("Click 'Start' to start the quiz.")

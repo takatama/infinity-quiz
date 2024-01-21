@@ -42,7 +42,7 @@ def create_quiz(genre="Python", num_questions=3, num_options=4):
                                         "description": "Options to choose from"
                                     },
                                     "answerIndex": {
-                                        "type": "string",
+                                        "type": "number",
                                         "description": "Index of the correct answer in the options array"
                                     }
                                 },
