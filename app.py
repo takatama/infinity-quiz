@@ -2,6 +2,8 @@ import streamlit as st
 import json
 from open_ai import create_quiz
 
+NONE_OF_THE_ABOVE = 'None of the above'
+
 # Initialize session state
 def initialize_state(questions):
     if 'quiz_state' not in st.session_state:
@@ -15,14 +17,14 @@ def initialize_state(questions):
 # Display question and options
 def display_question(question):
     st.write(question['question'])
-    options = question['options'] + ['None of the above'] # 該当なし
+    options = question['options'] + [NONE_OF_THE_ABOVE] # 該当なし
     return st.radio("Choose one:", options, key='radio')
 
 # Check answer and update state
 def check_answer(answer, question):
     if st.button('Submit', key='submit_button'):
         correct = answer == question['options'][question['answerIndex']]
-        if answer == 'None of the above':
+        if answer == NONE_OF_THE_ABOVE:
             st.session_state.message = f"I'm sorry. The answer I had in mind was {question['options'][question['answerIndex']]}."
         elif correct:
             st.session_state.score += 1
@@ -47,7 +49,10 @@ def display_final_score_and_answers():
     st.write('Your final score is:', st.session_state.score)
     for question, user_answer, correct, correct_answer in st.session_state.user_answers:
         st.write(f"Question: {question}")
-        st.write(f"Your answer: {user_answer} ({'Correct' if correct else 'Incorrect'})")
+        if user_answer == NONE_OF_THE_ABOVE:
+            st.write("Your answer: None of the Above (This means you believe none of the provided options were correct)")
+        else:
+            st.write(f"Your answer: {user_answer} ({'Correct' if correct else 'Incorrect'})")
         st.write(f"Correct answer: {correct_answer}")
         st.write("---")
     if st.button("Retry"):
