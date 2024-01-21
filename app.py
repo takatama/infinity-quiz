@@ -15,13 +15,16 @@ def initialize_state(questions):
 # Display question and options
 def display_question(question):
     st.write(question['question'])
-    return st.radio("Choose one:", question['options'], key='radio')
+    options = question['options'] + ['None of the above'] # 該当なし
+    return st.radio("Choose one:", options, key='radio')
 
 # Check answer and update state
 def check_answer(answer, question):
     if st.button('Submit', key='submit_button'):
         correct = answer == question['options'][question['answerIndex']]
-        if correct:
+        if answer == 'None of the above':
+            st.session_state.message = f"I'm sorry. The answer I had in mind was {question['options'][question['answerIndex']]}."
+        elif correct:
             st.session_state.score += 1
             st.session_state.message = 'Correct!'
         else:
