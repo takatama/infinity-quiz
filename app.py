@@ -14,11 +14,18 @@ def initialize_state(questions):
         st.session_state.message = ""
         st.session_state.user_answers = []  # Initialize user_answers in session_state
 
+def escape_markdown(text):
+    # Markdownで特別な意味を持つ文字をエスケープする
+    markdown_special_chars = "#*[]()_-+`!"
+    for char in markdown_special_chars:
+        text = text.replace(char, "\\" + char)
+    return text
+
 # Display question and options
 def display_question(question):
     st.write(question['question'])
     options = question['options'] + [NONE_OF_THE_ABOVE] # 該当なし
-    return st.radio("Choose one:", options, key='radio')
+    return st.radio("Choose one:", options, key='radio', format_func=escape_markdown)
 
 # Check answer and update state
 def check_answer(answer, question):
