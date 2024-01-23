@@ -53,8 +53,8 @@ def create_quiz_by_function_calling(genre, num_questions, num_options):
             {
                 "type": "function",
                 "function": {
-                    "name": "create_questions",
-                    "description": "Get quiz for given genre",
+                    "name": "show_questions",
+                    "description": "show given questions",
                     "parameters": {
                         "$schema": "http://json-schema.org/draft-07/schema#",
                         "type": "object",
@@ -85,7 +85,7 @@ def create_quiz_by_function_calling(genre, num_questions, num_options):
                 },
             }
         ],
-        tool_choice={"type": "function", "function": {"name": "create_questions"}},
+        tool_choice={"type": "function", "function": {"name": "show_questions"}},
     )
     message = response.choices[0].message
     args = json.loads(message.tool_calls[0].function.arguments)
@@ -94,8 +94,8 @@ def create_quiz_by_function_calling(genre, num_questions, num_options):
 
 
 def create_quiz(genre="Python", num_questions=3, num_options=4):
-    # return create_quiz_by_function_calling(genre, num_questions, num_options)
     return create_quiz_by_json_mode(genre, num_questions, num_options)
+    # return create_quiz_by_function_calling(genre, num_questions, num_options)
 
 
 if __name__ == "__main__":
