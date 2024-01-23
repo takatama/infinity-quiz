@@ -6,7 +6,10 @@ import json
 load_dotenv()
 
 
-def _create_quiz_by_json_mode(client, genre, num_questions, num_options):
+def create_quiz_by_json_mode(genre, num_questions, num_options):
+    client = OpenAI(
+        api_key=os.getenv("OPENAI_API_KEY"),
+    )
     response = client.chat.completions.create(
         model=os.getenv("OPENAI_MODEL"),
         messages=[
@@ -28,7 +31,10 @@ def _create_quiz_by_json_mode(client, genre, num_questions, num_options):
     return json_obj["questions"]
 
 
-def _create_quiz_by_function_calling(client, genre, num_questions, num_options):
+def create_quiz_by_function_calling(genre, num_questions, num_options):
+    client = OpenAI(
+        api_key=os.getenv("OPENAI_API_KEY"),
+    )
     response = client.chat.completions.create(
         model=os.getenv("OPENAI_MODEL"),
         messages=[
@@ -88,11 +94,8 @@ def _create_quiz_by_function_calling(client, genre, num_questions, num_options):
 
 
 def create_quiz(genre="Python", num_questions=3, num_options=4):
-    client = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY"),
-    )
-    return _create_quiz_by_function_calling(client, genre, num_questions, num_options)
-    # return _create_quiz_by_json_mode(client, genre, num_questions, num_options)
+    # return create_quiz_by_function_calling(genre, num_questions, num_options)
+    return create_quiz_by_json_mode(genre, num_questions, num_options)
 
 
 if __name__ == "__main__":
